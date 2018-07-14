@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>订单详情</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <!-- jquery -->
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <!-- boostrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- jquery-validator -->
+    <script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-validate/1.17.0/localization/messages_zh.min.js"></script>
+    <!-- layer -->
+    <script src="https://cdn.bootcss.com/layer/3.1.0/layer.js"></script>
+    <!-- md5.js -->
+    <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <div class="panel panel-default">
+        <div class="panel-heading">秒杀订单详情</div>
+        <table class="table" id="goodslist">
+            <tr>
+                <td>商品名称</td>
+                <td th:text="${goods.goodsName}" colspan="3"></td>
+            </tr>
+            <tr>
+                <td>商品图片</td>
+                <td colspan="2"><img th:src="@{${goods.goodsImg}}" width="200" height="200" /> </td>
+            </tr>
+            <tr>
+                <td>订单价格</td>
+                <td colspan="2" th:text="${order.goodsPrice}"></td>
+            </tr>
+            <tr>
+                <td>下单时间</td>
+                <td th:text="${#dates.format(order.createDate, 'yyyy-MM-dd HH:mm:ss')}" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>订单状态</td>
+                <td>
+                    <span th:if="${order.status eq 0}">未支付</span>
+                    <span th:if="${order.status eq 1}">待发货</span>
+                    <span th:if="${order.status eq 2}">已发货</span>
+                    <span th:if="${order.status eq 3}">已收货</span>
+                    <span th:if="${order.status eq 4}">已退款</span>
+                    <span th:if="${order.status eq 5}">已完成</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+                </td>
+            </tr>
+            <tr>
+                <td>收货人</td>
+                <td colspan="2">XXX 15201010101</td>
+            </tr>
+            <tr>
+                <td>收货地址</td>
+                <td colspan="2">北京市昌平区回龙观龙博一区</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>登录</title>
+    <!-- jquery -->
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <!-- boostrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- jquery-validator -->
+    <script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-validate/1.17.0/localization/messages_zh.min.js"></script>
+    <!-- layer -->
+    <script src="https://cdn.bootcss.com/layer/3.1.0/layer.js"></script>
+    <!-- md5.js -->
+    <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+
+</head>
+<body>
+    <form name="loginForm" id="loginForm" method="post" style="width:50%; margin:0 auto">
+        <h2 style="text-align:center;margin-top:20px;margin-bottom:20px">用户登录</h2>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="form-label col-md-4">请输入手机号码</label>
+                <div class="col-md-5">
+                    <input id="mobile" name="mobile" class="form-control" type="text" placeholder="手机号码" required="true"
+                           minlength="11" maxlength="11"/>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <label class="form-label col-md-4">请输入密码</label>
+                <div class="col-md-5">
+                    <input id="password" name="password" class="form-control" type="password" placeholder="密码" required="true" minlength="6" maxlength="16" />
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <button class="btn btn-primary btn-block" type="reset" onclick="reset()">重置</button>
+            </div>
+            <div class="col-md-5">
+                <button class="btn btn-primary btn-block" type="submit" onclick="login()">登录</button>
+            </div>
+        </div>
+    </form>
+</body>
+<script>
+    function login() {
+        $("#loginForm").validate({
+            submitHandler: function(form) {
+                doLogin();
+            }
+        });
+    }
+    function doLogin() {
+        g_showLoading();
+        var inputPass = $("#password").val();
+        var salt = g_password_salt;
+        var str = "" + salt.charAt(0) + salt.charAt(2) + inputPass + salt.charAt(5) + salt.charAt(4);
+        var password = md5(str);
+
+        $.ajax({
+            url: "/login/do_login",
+            method: "post",
+            data: {
+                mobile: $("#mobile").val(),
+                password: password
+            },
+            success: function(data) {
+                layer.closeAll();
+                if (data.code == 0) {
+                    layer.msg("成功");
+                    window.location.href = "/goods/to_list";
+                } else {
+                    layer.msg(data.msg);
+                }
+                console.log(data);
+            },
+            error: function() {
+                layer.closeAll();
+            }
+        })
+    }
+</script>
+</html>
