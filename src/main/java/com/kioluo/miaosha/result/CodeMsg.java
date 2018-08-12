@@ -11,6 +11,8 @@ public class CodeMsg {
     public static CodeMsg SUCCESS = new CodeMsg(0, "success");
     public static CodeMsg SERVER_ERROR = new CodeMsg(500100, "服务器端异常");
     public static CodeMsg BIND_ERROR = new CodeMsg(500101, "参数校验异常：%s");
+    public static CodeMsg REQUEST_ILLEGLE = new CodeMsg(500102, "非法请求");
+    public static CodeMsg ACCESS_LIMIT_REACHED = new CodeMsg(500102, "访问太频繁");
 
     // 登录模块5002XX
     public static CodeMsg SESSION_ERROR = new CodeMsg(500210, "Session不存在或者已经失效");
@@ -23,6 +25,7 @@ public class CodeMsg {
     // 秒杀模块5003XX
     public static CodeMsg NOSTOCK_ERROR = new CodeMsg(500310, "商品库存不足");
     public static CodeMsg REPEATMIAOSHA_ERROR = new CodeMsg(500311, "重复秒杀");
+    public static CodeMsg MIAOSHA_FAIL = new CodeMsg(500312, "秒杀失败");
 
 
 

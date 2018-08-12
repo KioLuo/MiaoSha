@@ -1,5 +1,6 @@
 package com.kioluo.miaosha.controller;
 
+import com.kioluo.miaosha.rabbitmq.MQSender;
 import com.kioluo.miaosha.redis.RedisService;
 import com.kioluo.miaosha.redis.UserKey;
 import com.kioluo.miaosha.result.Result;
@@ -24,6 +25,9 @@ public class SampleController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    MQSender mqSender;
+
     @RequestMapping("/thymeleaf")
     public String hello(Model model) {
         model.addAttribute("name", "xiaoli");
@@ -42,6 +46,30 @@ public class SampleController {
     public Result<String> redisSet(@PathVariable("key") String key, @PathVariable("value") String value) {
         redisService.set(UserKey.getByName, key, value);
         return Result.success(value);
+    }
+
+    @RequestMapping("/rabbitmq/send/{message}")
+    @ResponseBody
+    public void sendMessage(@PathVariable("message") String message) {
+        mqSender.send(message);
+    }
+
+    @RequestMapping("/rabbitmq/sendTopic/{message}")
+    @ResponseBody
+    public void sendTopicMessage(@PathVariable("message") String message) {
+        mqSender.sendTopic(message);
+    }
+
+    @RequestMapping("/rabbitmq/sendFanout/{message}")
+    @ResponseBody
+    public void sendFanoutMessage(@PathVariable("message") String message) {
+        mqSender.sendFanout(message);
+    }
+
+    @RequestMapping("/rabbitmq/sendHeader/{message}")
+    @ResponseBody
+    public void sendHeaderMessage(@PathVariable("message") String message) {
+        mqSender.sendHeader(message);
     }
 
 }

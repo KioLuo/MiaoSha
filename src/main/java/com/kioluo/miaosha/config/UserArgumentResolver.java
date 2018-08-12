@@ -1,5 +1,6 @@
 package com.kioluo.miaosha.config;
 
+import com.kioluo.miaosha.access.UserContext;
 import com.kioluo.miaosha.domain.MiaoshaUser;
 import com.kioluo.miaosha.service.MiaoshaUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,28 +35,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     @Nullable
     @Override
     public Object resolveArgument(MethodParameter methodParameter, @Nullable ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, @Nullable WebDataBinderFactory webDataBinderFactory) throws Exception {
-        HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-        HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
-
-        String paramToken = request.getParameter(MiaoshaUserService.COOKIE_TOKEN_NAME);
-        String cookieToken = getCookie(request, MiaoshaUserService.COOKIE_TOKEN_NAME);
-        if (StringUtils.isEmpty(paramToken) && StringUtils.isEmpty(cookieToken)) {
-            return null;
-        }
-        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
-        return miaoshaUserService.getByToken(response, token);
+        return UserContext.getUser();
     }
 
-    private String getCookie(HttpServletRequest request, String cookieTokenName) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length <= 0) {
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookieTokenName)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
 }

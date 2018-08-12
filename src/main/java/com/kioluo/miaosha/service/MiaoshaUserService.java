@@ -30,6 +30,10 @@ public class MiaoshaUserService {
     @Autowired
     private MiaoshaUserDao miaoshaUserDao;
 
+    public void addUser(MiaoshaUser user) {
+        miaoshaUserDao.addUser(user);
+    }
+
     public MiaoshaUser getById(long id) {
         return miaoshaUserDao.getById(id);
     }

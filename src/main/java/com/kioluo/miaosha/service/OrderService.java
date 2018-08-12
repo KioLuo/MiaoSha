@@ -4,6 +4,8 @@ import com.kioluo.miaosha.dao.OrderDao;
 import com.kioluo.miaosha.domain.MiaoshaOrder;
 import com.kioluo.miaosha.domain.MiaoshaUser;
 import com.kioluo.miaosha.domain.OrderInfo;
+import com.kioluo.miaosha.redis.OrderKey;
+import com.kioluo.miaosha.redis.RedisService;
 import com.kioluo.miaosha.vo.GoodsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import java.util.Date;
 public class OrderService {
     @Autowired
     private OrderDao orderDao;
+    @Autowired
+    private RedisService redisService;
 
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(Long userId, long goodsId) {
         MiaoshaOrder order = orderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
@@ -45,14 +49,19 @@ public class OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(miaoshaUser.getId());
-        long orderId = orderDao.insert(orderInfo);
-
+        orderDao.insert(orderInfo);
         // 创建miaosha_order
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setGoodsId(goodsVo.getId());
-        miaoshaOrder.setOrderId(orderId);
+        miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(miaoshaUser.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
+
+        redisService.set(OrderKey.getMiaoshaOrderByUidGid, miaoshaUser.getId() + "_" + goodsVo.getId(), miaoshaOrder);
         return orderInfo;
+    }
+
+    public OrderInfo getOrderInfo(long orderId) {
+        return orderDao.getOrderInfo(orderId);
     }
 }
